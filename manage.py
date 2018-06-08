@@ -1,18 +1,19 @@
 from flask_script import Manager
-from mainApp import create_app
+
 from flask_migrate import MigrateCommand
+
+from mainApp import create_app
 
 
 app = create_app()
 #创建manage管理入口
 #数据迁移命令的基础
-manage = Manager(app)
+manager = Manager(app)
 
 #添加db迁移的命令
-manage.add_command('db',MigrateCommand)
+manager.add_command('db',MigrateCommand)
 
 
-
-
-manage.run()
+if __name__ == '__main__':
+    manager.run()
 

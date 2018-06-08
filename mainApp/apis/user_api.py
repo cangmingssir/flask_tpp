@@ -8,7 +8,7 @@ from flask_restful import Resource, reqparse
 from mainApp import helper, dao
 import mainApp.ext
 from mainApp.models import User
-
+import tasks
 
 
 class UserApi(Resource):
@@ -38,7 +38,8 @@ class UserApi(Resource):
         print('dsfsdf',u)
         print(dao.save(u))
         if dao.save(u):
-            helper.sendEmail(u)
+            # helper.sendEmail(u)
+            tasks.sendMail.delay(u.id)    #celery 异步任务发送邮件
             return {'status':200,
                     'msg':'用户注册成功！'}
         return {'status':201,

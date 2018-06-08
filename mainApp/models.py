@@ -41,6 +41,18 @@ class City(db.Model):
     letter_id = Column(Integer, ForeignKey(Letter.id))
     letter = relationship("Letter", backref=backref("citys", lazy=True))
 
+#用户角色
+class Role(db.Model):
+    #用户角色
+    id = Column(Integer,primary_key=True,autoincrement=True)
+    name = Column(String(20))
+    rights = Column(Integer,default=1)
+
+
+class Qx(db.Model):
+    id = Column(Integer,primary_key=True,autoincrement=True)
+    name = Column(String(30))
+    right = Column(Integer)
 
 # 用户模型
 class User(db.Model):
@@ -59,6 +71,12 @@ class User(db.Model):
     photo_1 = Column(String(100), nullable=True)  # 原图
     phone_2 = Column(String(100), nullable=True)  # 小图
 
+    #权限(被管理员授权)
+    rights = Column(Integer,default=1)
+
+    #用户角色
+    role_id = Column(Integer,ForeignKey(Role.id))
+    role =relationship('Role',backref=backref('users',lazy=True))
 
 # 电影模型
 class Movies(db.Model):
@@ -78,6 +96,7 @@ class Movies(db.Model):
     flag = Column(Integer)  # 状态(热映 即将上映)
     isdelete = Column(Boolean, default=0)  # 是否删除
 
+
 # 电影院模型
 class Cinemas(db.Model):
     #__tablename__='t_cinemas'
@@ -93,3 +112,5 @@ class Cinemas(db.Model):
     astrict = Column(Integer)       #限购数量
     flag = Column(Boolean,default=True)     #状态(营业、休息)
     isdelete = Column(Boolean,default=True)     #是否删除
+
+

@@ -133,6 +133,7 @@ class AccountApi(Resource):
         logoutactiveParser.add_argument('Token',required=True,help='token不能为空')
         args = logoutactiveParser.parse_args()
         logintoken = args.get('Token')
+        print('退出的token',logintoken)
         user_id = session.get(logintoken)
         if not user_id:
             return {'status':701,'msg':'用户未登录，请先登录！'}
@@ -148,7 +149,7 @@ class AccountApi(Resource):
     #     return {'msg':'dfdfdfdf'}
 
 
-
+    #上传图片
     def post(self):
         #定义输入字段
         myImageactice = self.parser.copy()
