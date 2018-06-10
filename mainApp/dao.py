@@ -24,7 +24,7 @@ def getById(cls,id):
     except:
         return False
 
-def save(obj) -> bool:
+def save(obj):
     try:
         db.session.add(obj)
         db.session.commit()

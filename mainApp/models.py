@@ -4,7 +4,7 @@ from datetime import datetime
 
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text, Enum, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text, Enum, Float, text
 from sqlalchemy.orm import relationship, backref
 
 # rom mainApp.ext import db
@@ -87,14 +87,14 @@ class Movies(db.Model):
     director = Column(String(50))  # 导演
     leadingRole = Column(String(100))  # 主演演员信息
     type = Column(String(100))  # 电影类型
-    country = Column(String(20))  # 国家
+    country = Column(String(30))  # 国家
     language = Column(String(100))  # 语言
     duration = Column(Integer)  # 电影时长
     screeningmodel = Column(String(20))  # 放映模式(2D 3D 4D)
     openday = Column(DateTime)  # 上映时间
     backgroundpicture = Column(String(100))  # 背景图片
     flag = Column(Integer)  # 状态(热映 即将上映)
-    isdelete = Column(Boolean, default=0)  # 是否删除
+    isdelete = Column(Boolean, server_default=text('0'))  # 是否删除
 
 
 # 电影院模型
@@ -106,11 +106,11 @@ class Cinemas(db.Model):
     district = Column(String(50))     #区域
     address = Column(String(200))    #地址
     phone = Column(String(50))      #电话
-    score = Column(Float(precision=1))         #影厅数量
-    hallnum = Column(Float(10))         #评分
+    score = Column(Float(precision=1))    #评分
+    hallnum = Column(Integer)         #影厅数量
     servicecharge = Column(Float(precision=2))       #手续费
     astrict = Column(Integer)       #限购数量
-    flag = Column(Boolean,default=True)     #状态(营业、休息)
-    isdelete = Column(Boolean,default=True)     #是否删除
+    flag = Column(Boolean,server_default=text('True'))     #状态(营业、休息)
+    isdelete = Column(Boolean,server_default=text('True'))     #是否删除
 
 

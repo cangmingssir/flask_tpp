@@ -29,7 +29,7 @@ def check_login(qx):
 class MoviesApi(Resource):
     # 定制输入的参数
     parser = reqparse.RequestParser()
-    parser.add_argument('flag', required=True, help='必须指定影片类型', type=int)
+    parser.add_argument('flag',type=int, required=True, help='必须指定影片类型')
     parser.add_argument('city', default='')
     parser.add_argument('region', default='')
     parser.add_argument('orderby',default='openday')
@@ -50,6 +50,7 @@ class MoviesApi(Resource):
         })
     }
 
+    #查询方法
     @marshal_with(out_fields)
     def get(self):
         # 验证请求参数
@@ -58,13 +59,14 @@ class MoviesApi(Resource):
         print(movies.all())
 
         sort = args.get('sort')
-            #排序
+        #排序
         movies = movies.order_by(('-' if sort==1 else '')+args.get('orderby'))
         #分页
         pager = movies.paginate(args.get('page'),args.get('limit'))
 
         return {'returnValue': pager.items}
 
+    #删除电影
     @check_login(QX.DELETE_QX)
     def delete(self):
         mid = request.args.get('mid')
@@ -88,3 +90,67 @@ class MoviesApi(Resource):
         #
         # return ({'msg':'您没有VIP权限，请开通VIP功能'})
 
+    def post(self):
+        movieActive = self.parser.copy()
+        movieActive.add_argument('opt',required=True,help='请求类型不能为空')
+        movieActive.remove_argument('flag')
+        args =movieActive.parse_args()
+        opt = args.get('opt')
+        if opt == 'addmovie':
+            return self.addMovie()
+        elif opt == 'alertMovie':
+            return self.alertMovie()
+
+
+
+    #添加电影
+    @check_login(QX.ADD_QX)
+    def addMovie(self):
+        return self.addAlertMovie(QX.ADD_QX)
+
+    #修改电影
+    def alertMovie(self):
+        return self.addAlertMovie(QX.EDIT_QX)
+
+    #添加修改电影的处理函数
+    def addAlertMovie(self,qx):
+        addmovieActive = self.parser.copy()
+        addmovieActive.add_argument('id',type=int,required=True,help='电影编号不能为空')
+        addmovieActive.add_argument('showname',required=True,help='电影名不能为空')
+        addmovieActive.add_argument('shownameen',required=True,help='英文电影名不能为空')
+        addmovieActive.add_argument('director',required=True,help='导演名不能为空')
+        addmovieActive.add_argument('leadingRole',required=True,help='主演名不能为空')
+        addmovieActive.add_argument('type',required=True,help='电影类型不能为空')
+        addmovieActive.add_argument('country',required=True,help='所属国家不能为空')
+        addmovieActive.add_argument('language',required=True,help='语言不能为空')
+        addmovieActive.add_argument('duration',type=int,required=True,help='电影时间不能为空')
+        addmovieActive.add_argument('screeningmodel',required=True,help='放映模式不能为空')
+        addmovieActive.add_argument('openday',required=True,help='上映时间不能为空')
+        addmovieActive.add_argument('backgroundpicture',required=True,help='背景图片不能为空')
+
+        #验证请求参数
+        args = addmovieActive.parse_args()
+        movies_id = args.get('id')
+        movies = dao.getById(Movies, movies_id)
+        #判断用户是否执行修改权限
+        if qx == QX.EDIT_QX:
+            #print(movies.showname)
+            #判断movies数据库中是否存在该电影，存在则判断为修改影片，否则为新增影片
+            if not movies:
+                return {'msg':'您所修改的电影不存在'}
+        # 判断用户是否执行添加权限
+        elif qx == QX.ADD_QX:
+            if movies:
+                return {'msg':'您所添加的电影已存在'}
+            movies=Movies()
+        #args是一个输入字段的字典
+        for key,value in args.items():
+            #判断key是否是movies的字段属性
+            if hasattr(movies,key):
+                print(key, ':', value)
+                setattr(movies,key,value)
+        # print('主演:',movies.leadingRole)
+        # print('保存电影',dao.save(movies))
+        if dao.save(movies):
+            return {'msg':'{} 电影保存成功！'.format(movies.showname)}
+        return {'msg':'电影保存失败，请检查必备属性是否输入'}

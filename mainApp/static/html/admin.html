@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台用户管理页面</title>
+    <script src="/mainApp/static/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/mainApp/static/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="/mainApp/static/css/bootstrap.css">
+    <style>
+        .table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .table > thead > tr > th,
+        .table > tbody > tr > th,
+        .table > tfoot > tr > th,
+        .table > thead > tr > td,
+        .table > tbody > tr > td,
+        .table > tfoot > tr > td {
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+            border-top: 1px solid #ddd;
+        }
+
+        .table > thead > tr > th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .table > caption + thead > tr:first-child > th,
+        .table > colgroup + thead > tr:first-child > th,
+        .table > thead:first-child > tr:first-child > th,
+        .table > caption + thead > tr:first-child > td,
+        .table > colgroup + thead > tr:first-child > td,
+        .table > thead:first-child > tr:first-child > td {
+            border-top: 0;
+        }
+
+        .table > tbody + tbody {
+            border-top: 2px solid #ddd;
+        }
+
+        .table .table {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>用户ID</th>
+        <th>用户姓名</th>
+        <th>用户邮箱</th>
+        <th>联系方式</th>
+        <th>是否激活</th>
+        <th>是否注销</th>
+        <th>注册时间</th>
+        <th>最近登录时间</th>
+        <th>用户权限</th>
+        <th>用户身份</th>
+        <th>相关操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <th>{{ user.id }}</th>
+            <th>{{ user.name }}</th>
+            <th>{{ user.email }}</th>
+            <th>{{ user.phone }}</th>
+            <th>{{ user.is_active }}</th>
+            <th>{{ user.is_life }}</th>
+            <th>{{ user.regist_time }}</th>
+            <th>{{ user.last_login_time }}</th>
+            <th>{{ user.rights }}</th>
+            <th>{{ user.role.name }}</th>
+        <th><a class="btn btn-info" onclick="alertMovie()">修改</a>&nbsp;
+            <a class="btn btn-danger" onclick="deleteMovie()">删除</a>&nbsp;
+            <a class="btn btn-success" onclick="addMovie()">新增</a>&nbsp;</th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function alertMovie() {
+
+    }
+</script>
+
+</body>
+</html>
