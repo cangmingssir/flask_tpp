@@ -86,6 +86,7 @@ class CinemasApi(Resource):
                     return {'msg':'该地区没有电影院'}
                 self.selectCinemas(cinemas)
             return {'msg':'城市和城区区域不能为空'}
+        #用于查询某一城市的影城信息
         elif opt == 'city':
             if city:
                 cinemas=dao.queryOne(Cinemas).filter(Cinemas.city==city)
@@ -93,6 +94,7 @@ class CinemasApi(Resource):
                     return {'msg':'该城市没有电影院'}
                 self.selectCinemas(cinemas)
             return {'msg':'搜索城市不能为空'}
+        #查询所有的影城信息
         else:
             cinemas=dao.queryAll(Cinemas)
             self.selectCinemas(cinemas)
